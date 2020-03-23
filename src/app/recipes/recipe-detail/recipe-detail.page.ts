@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
 import { RecipesService } from '../recipes.service';
 import { Recipe } from '../recipe.model';
 
@@ -14,11 +16,11 @@ export class RecipeDetailPage implements OnInit {
   // WE IMPORT RECIPE FROM RECIPE.MODEL
   loadedRecipe: Recipe;
 
-
   constructor(
     private activatedRoute: ActivatedRoute,
     private recipesService: RecipesService,
-    private router: Router
+    private router: Router,
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
@@ -36,8 +38,29 @@ export class RecipeDetailPage implements OnInit {
   }
 
   onDeleteRecipe() {
-    this.recipesService.deleteRecipe(this.loadedRecipe.id);
-    // when recipe has been deleted we then go to the recipes page having added private router and imported it
-    this.router.navigate(['/recipes']);
+    // alert ctrl is then used here having been injected ato notify user of deletion
+    this.alertCtrl
+      .create({
+        header: 'Are you sure about this life decision?',
+        message: 'Do you really want to do this? Delete the recipe?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Delete',
+            // we want to delete only if this button is pressed thus the handler below
+            handler: () => {
+              this.recipesService.deleteRecipe(this.loadedRecipe.id);
+              // when recipe has been deleted we then go to the recipes page having added private router and imported it
+              this.router.navigate(['/recipes']);
+            }
+          }
+        ]
+        // create returns a promise which gives an alert element
+      }).then(alertEl => {
+        alertEl.present();
+      });
   }
 }
