@@ -44,4 +44,13 @@ export class RecipesService {
       return recipe.id === recipeId;
     })};
   }
+
+  deleteRecipe(recipeId: string) {
+    // FILTER FUNCTION EXECUTES A FUNCTION ON EVERY ELEMENT IN AN
+    // ARRAY. IF IT RETURNS TRUE, IT KEEPS THE ELEMENT ODAWISE,
+    // GETS RID OF IT
+    this.recipes = this.recipes.filter(recipe => {
+      return recipe.id !== recipeId;
+    });
+  }
 }

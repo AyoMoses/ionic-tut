@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecipesService } from '../recipes.service';
 import { Recipe } from '../recipe.model';
 
@@ -17,7 +17,8 @@ export class RecipeDetailPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private recipesService: RecipesService
+    private recipesService: RecipesService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -32,5 +33,11 @@ export class RecipeDetailPage implements OnInit {
       // WE THEN STORE THE RECIPE BEING RETRIEVED
       this.loadedRecipe = this.recipesService.getRecipe(recipeId);
     });
+  }
+
+  onDeleteRecipe() {
+    this.recipesService.deleteRecipe(this.loadedRecipe.id);
+    // when recipe has been deleted we then go to the recipes page having added private router and imported it
+    this.router.navigate(['/recipes']);
   }
 }
